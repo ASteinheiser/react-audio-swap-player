@@ -6,7 +6,8 @@ const SoundBars = ({
   height = 100,
   zoom = 1,
   color = 'black',
-  onDone = null
+  onDone = null,
+  onClick = () => {},
 }) => {
   const canvasRef = useRef(null);
   const relativeWidth = width * zoom;
@@ -45,11 +46,21 @@ const SoundBars = ({
     }
   }
 
+  const handleClick = e => {
+    e.preventDefault();
+    if (!buffer) return;
+
+    const songPositionPercentage = e.nativeEvent.offsetX / relativeWidth;
+    const second = buffer.duration * songPositionPercentage;
+    onClick({ second });
+  }
+
   return (
     <canvas
       ref={canvasRef}
       width={relativeWidth}
       height={height}
+      onClick={handleClick}
     />
   )
 };
