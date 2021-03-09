@@ -3,12 +3,12 @@ import load from 'audio-loader';
 
 import AudioPlayer from './AudioPlayer';
 
+const MusicURL = 'https://test-audio-file.s3-us-west-2.amazonaws.com/Bakar+-+Hell+N+Back+(Official+Video).mp3';
+
 const App = () => {
   const [buffer, setBuffer] = useState(null);
 
-  useEffect(() => {
-    load('http://example.net/audio/file.mp3').then(setBuffer);
-  }, []);
+  useEffect(() => load(MusicURL).then(setBuffer), []);
 
   return (
     <AudioPlayer

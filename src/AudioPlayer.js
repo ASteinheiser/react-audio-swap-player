@@ -18,7 +18,7 @@ const AudioPlayer = ({
       const channelData = buffer.getChannelData(0);
       const step = Math.ceil(channelData.length / relativeWidth);
 
-      const ctx = canvasRef.getDOMNode().getContext('2d');
+      const ctx = canvasRef.current.getContext('2d');
       ctx.fillStyle = color;
       draw(relativeWidth, step, middle, channelData, ctx);
 
