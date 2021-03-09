@@ -11,14 +11,7 @@ const App = () => {
   useEffect(() => load(MusicURL).then(setBuffer), []);
 
   return (
-    <AudioPlayer
-      buffer={buffer}
-      width={500}
-      height={100}
-      zoom={1}
-      color={'black'}
-      onDone={null}
-    />
+    <AudioPlayer buffer={buffer} />
   )
 }
 
