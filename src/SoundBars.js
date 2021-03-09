@@ -13,18 +13,18 @@ const SoundBars = ({
   const relativeWidth = width * zoom;
 
   useEffect(() => {
-    if (buffer && canvasRef) {
-      const middle = height / 2;
+    if (!buffer || !canvasRef) return;
 
-      const channelData = buffer.getChannelData(0);
-      const step = Math.ceil(channelData.length / relativeWidth);
+    const middle = height / 2;
 
-      const ctx = canvasRef.current.getContext('2d');
-      ctx.fillStyle = color;
-      draw(relativeWidth, step, middle, channelData, ctx);
+    const channelData = buffer.getChannelData(0);
+    const step = Math.ceil(channelData.length / relativeWidth);
 
-      if (onDone) onDone();
-    }
+    const ctx = canvasRef.current.getContext('2d');
+    ctx.fillStyle = color;
+    draw(relativeWidth, step, middle, channelData, ctx);
+
+    if (onDone) onDone();
   }, [buffer, canvasRef, relativeWidth, height, color, onDone]);
 
   const draw = (width, step, middle, data, ctx) => {
