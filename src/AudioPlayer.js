@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import playAudio from 'audio-play';
 
 import SoundBars from './SoundBars';
+import PlayButton from './PlayButton';
+import SwitchButton from './SwitchButton';
 
 const AudioPlayer = ({ buffer = null }) => {
   const [audioStart, setAudioStart] = useState(0);
@@ -29,14 +31,24 @@ const AudioPlayer = ({ buffer = null }) => {
   }, [audioStart, buffer]);
 
   return (
-    <SoundBars
-      buffer={buffer}
-      width={width}
-      height={height}
-      zoom={zoom}
-      color={color}
-      onClick={({ second }) => setAudioStart(second)}
-    />
+    <div className='audio-player__container' style={{ width }}>
+      <div className='audio-player__buttons'>
+        <PlayButton onClick={e => console.log(e)} />
+
+        <SwitchButton onClick={e => console.log(e)} />
+      </div>
+
+      <div className='sound-bar__container'>
+        <SoundBars
+          buffer={buffer}
+          width={width}
+          height={height}
+          zoom={zoom}
+          color={color}
+          onClick={({ second }) => setAudioStart(second)}
+        />
+      </div>
+    </div>
   );
 };
 

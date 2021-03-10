@@ -11,3 +11,34 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.sound-bar__container {
+  background-color: rgb(113 113 113 / 60%);
+  border-radius: 0px 8px 8px 0px;
+  border: 1px solid #6b6b6b;
+  padding: 10px 10px 8px 12px;
+}
+
+.audio-player__buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  background-color: rgb(113 113 113 / 60%);
+  border: 1px solid #6b6b6b;
+  border-radius: 8px 0px 0px 8px;
+  border-right: 0px;
+}
+
+.audio-player__container {
+  display: flex;
+  flex-direction: row;
+}
+
+.play-button__container {
+  padding: 4px 12px 0px;
+}
+
+.switch-button__container {
+  padding: 0px 12px 4px;
+}

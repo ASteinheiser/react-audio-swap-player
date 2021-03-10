@@ -5,7 +5,9 @@ const PlayButton = ({
   onClick = () => {}
 }) => {
   return (
-    <FontAwesomeIcon icon='play' onClick={onClick()} />
+    <div className='play-button__container' onClick={onClick}>
+      <FontAwesomeIcon icon='play' style={{ fontSize: 36 }} />
+    </div>
   );
 };
 
