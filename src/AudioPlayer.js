@@ -7,6 +7,8 @@ import SwitchButton from './SwitchButton';
 
 const AudioPlayer = ({ buffer = null }) => {
   const [audioStart, setAudioStart] = useState(0);
+  const [audioPlayer, setAudioPlayer] = useState(null);
+  const [audioPlaying, setAudioPlaying] = useState(false);
 
   const width = 1000;
   const height = 100;
@@ -25,15 +27,32 @@ const AudioPlayer = ({ buffer = null }) => {
       autoplay: true
     }
     const playback = playAudio(buffer, playbackOptions);
+    setAudioPlayer(playback);
 
-    playback.play();
+    if (audioStart > 0) {
+      playback.play();
+      setAudioPlaying(true);
+    }
+
     return () => playback.pause();
   }, [audioStart, buffer]);
+
+  const handleToggleAudio = () => {
+    if (!audioPlayer) return;
+
+    if (audioPlaying) {
+      audioPlayer.pause();
+      setAudioPlaying(false);
+    } else {
+      audioPlayer.play();
+      setAudioPlaying(true);
+    }
+  }
 
   return (
     <div className='audio-player__container' style={{ width }}>
       <div className='audio-player__buttons'>
-        <PlayButton onClick={e => console.log(e)} />
+        <PlayButton onClick={handleToggleAudio} active={audioPlaying} />
 
         <SwitchButton onClick={e => console.log(e)} />
       </div>
