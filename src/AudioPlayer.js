@@ -9,6 +9,7 @@ const AudioPlayer = ({ buffer = null }) => {
   const [audioStart, setAudioStart] = useState(0);
   const [audioPlayer, setAudioPlayer] = useState(null);
   const [audioPlaying, setAudioPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
 
   const width = 1000;
   const height = 100;
@@ -37,8 +38,23 @@ const AudioPlayer = ({ buffer = null }) => {
     return () => playback.pause();
   }, [audioStart, buffer]);
 
+  useEffect(() => {
+    if (!audioPlaying && currentTime) {
+      const playbackOptions = {
+        start: currentTime,
+        end: buffer.duration,
+        loop: false,
+        rate: 1,
+        volume: 1,
+        autoplay: true
+      }
+      setAudioPlayer(playAudio(buffer, playbackOptions));
+    }
+  }, [audioPlaying, currentTime, buffer]);
+
   const handleToggleAudio = () => {
     if (!audioPlayer) return;
+    setCurrentTime(audioPlayer.currentTime);
 
     if (audioPlaying) {
       audioPlayer.pause();
