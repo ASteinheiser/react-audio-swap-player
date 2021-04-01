@@ -22,12 +22,18 @@ const SoundBars = ({
 
     const ctx = canvasRef.current.getContext('2d');
     ctx.fillStyle = color;
-    draw(relativeWidth, step, middle, channelData, ctx);
+    draw({
+      data: channelData,
+      width: relativeWidth,
+      step,
+      middle,
+      ctx,
+    });
 
     if (onDone) onDone();
   }, [buffer, canvasRef, relativeWidth, height, color, onDone]);
 
-  const draw = (width, step, middle, data, ctx) => {
+  const draw = ({ width, step, middle, data, ctx }) => {
     for (let i = 0; i < width; i++) {
       let min = 1.0;
       let max = -1.0;

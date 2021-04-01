@@ -11,11 +11,6 @@ const AudioPlayer = ({ buffer = null }) => {
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
 
-  const width = 1000;
-  const height = 100;
-  const zoom = 1;
-  const color = 'black';
-
   useEffect(() => {
     if (!buffer) return;
 
@@ -65,6 +60,8 @@ const AudioPlayer = ({ buffer = null }) => {
     }
   }
 
+  const width = 1000;
+
   return (
     <div className='audio-player__container' style={{ width }}>
       <div className='audio-player__buttons'>
@@ -77,9 +74,6 @@ const AudioPlayer = ({ buffer = null }) => {
         <SoundBars
           buffer={buffer}
           width={width}
-          height={height}
-          zoom={zoom}
-          color={color}
           onClick={({ second }) => setAudioStart(second)}
         />
       </div>
