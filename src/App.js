@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import load from 'audio-loader';
 
-import AudioPlayer from './AudioPlayer';
+import AudioPlayer from './Components/AudioPlayer';
 
 const MusicURL = 'https://test-audio-file.s3-us-west-2.amazonaws.com/Bakar+-+Hell+N+Back+(Official+Video).mp3';
 
