@@ -81,15 +81,7 @@ const AudioPlayer = ({ buffer = null }) => {
           onClick={({ second }) => setAudioStart(second)}
           onDone={() => setLoading(false)}
         />
-        {loading && (
-          <LoadingSpinner
-            style={{
-              position: 'absolute',
-              top: (height / 2) - 10,
-              left: '50%',
-            }}
-          />
-        )}
+        {loading && <LoadingSpinner className='loading-spinner__container' />}
       </div>
     </div>
   );
