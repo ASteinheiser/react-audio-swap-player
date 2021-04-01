@@ -13,6 +13,7 @@ code {
 }
 
 .sound-bar__container {
+  position: relative;
   background-color: rgb(113 113 113 / 60%);
   border-radius: 0px 8px 8px 0px;
   border: 1px solid #6b6b6b;

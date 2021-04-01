@@ -4,8 +4,10 @@ import playAudio from 'audio-play';
 import SoundBars from './SoundBars';
 import PlayButton from './PlayButton';
 import SwitchButton from './SwitchButton';
+import LoadingSpinner from './LoadingSpinner';
 
 const AudioPlayer = ({ buffer = null }) => {
+  const [loading, setLoading] = useState(true);
   const [audioStart, setAudioStart] = useState(0);
   const [audioPlayer, setAudioPlayer] = useState(null);
   const [audioPlaying, setAudioPlaying] = useState(false);
@@ -61,6 +63,7 @@ const AudioPlayer = ({ buffer = null }) => {
   }
 
   const width = 1000;
+  const height = 100;
 
   return (
     <div className='audio-player__container' style={{ width }}>
@@ -74,8 +77,19 @@ const AudioPlayer = ({ buffer = null }) => {
         <SoundBars
           buffer={buffer}
           width={width}
+          height={height}
           onClick={({ second }) => setAudioStart(second)}
+          onDone={() => setLoading(false)}
         />
+        {loading && (
+          <LoadingSpinner
+            style={{
+              position: 'absolute',
+              top: (height / 2) - 10,
+              left: '50%',
+            }}
+          />
+        )}
       </div>
     </div>
   );

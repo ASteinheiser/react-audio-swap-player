@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPlay, faPause, faSync } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faPause, faSync, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import App from './App';
 import './index.css';
 
 // load font-awesome icons
-library.add(faPlay, faPause, faSync);
+library.add(faPlay, faPause, faSync, faSpinner);
 
 ReactDOM.render(
   <React.StrictMode>
