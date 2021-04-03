@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
-const STEP_WIDTH = 10;
+const STEP_SAMPLE_SIZE = 10;
+const STEP_WIDTH = 1;
 
 const SoundBars = ({
   buffer = null,
@@ -40,12 +41,12 @@ const SoundBars = ({
       let min = 1.0;
       let max = -1.0;
 
-      for (let j = 0; j < step / STEP_WIDTH; j++) {
+      for (let j = 0; j < step / STEP_SAMPLE_SIZE; j++) {
         let datumSum = 0;
-        for (let k = 0; k < STEP_WIDTH; k++) {
+        for (let k = 0; k < STEP_SAMPLE_SIZE; k++) {
           datumSum += data[(i * step) + j + k];
         }
-        const datumAvg = datumSum / 10;
+        const datumAvg = datumSum / STEP_SAMPLE_SIZE;
 
         if (datumAvg < min) {
           min = datumAvg;
