@@ -23,11 +23,17 @@
 }
 
 .play-button__container {
-  padding: 4px 12px 0px;
+  margin: 24px 24px 12px;
 }
 
 .switch-button__container {
-  padding: 0px 12px 4px;
+  margin: 12px 24px 24px;
+}
+
+.switch-button__container:hover,
+.play-button__container:hover {
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .loading-spinner__container {
@@ -38,4 +44,13 @@
 
 .loading-spinner__icon {
   font-size: 36px;
+}
+
+.time-indicator__line {
+  position: absolute;
+  top: calc(10px + 5%);
+
+  width: 4px;
+  border-radius: 2px;
+  background-color: rgba(0, 0, 0, 0.8);
 }

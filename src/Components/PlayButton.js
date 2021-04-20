@@ -8,9 +8,9 @@ const PlayButton = ({
   return (
     <div className='play-button__container' onClick={onClick}>
       {active ? (
-        <FontAwesomeIcon icon='pause' style={{ fontSize: 36 }} /> 
+        <FontAwesomeIcon icon='pause' style={{ fontSize: 32 }} /> 
       ) : (
-        <FontAwesomeIcon icon='play' style={{ fontSize: 36 }} /> 
+        <FontAwesomeIcon icon='play' style={{ fontSize: 32 }} /> 
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import playAudio from 'audio-play';
 
+import TimeIndicator from './TimeIndicator';
 import SoundBars from './SoundBars';
 import PlayButton from './PlayButton';
 import SwitchButton from './SwitchButton';
@@ -97,6 +98,15 @@ const AudioPlayer = ({ buffers = [null, null] }) => {
           onClick={({ second }) => setAudioStart(second)}
           onDone={() => setLoading(false)}
         />
+
+        {!loading && (
+          <TimeIndicator
+            height={height}
+            playing={audioPlaying}
+            currentTime={currentTime}
+          />
+        )}
+
         {loading && <LoadingSpinner className='loading-spinner__container' />}
       </div>
     </div>
