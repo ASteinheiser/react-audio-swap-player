@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 
 const STEP_WIDTH = 1;
-const ENTIRE_STEP_WIDTH = (STEP_WIDTH * 3);
+const ENTIRE_STEP_WIDTH = (STEP_WIDTH * 2.5);
 
 const SoundBars = ({
   buffer = null,
