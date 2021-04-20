@@ -6,7 +6,9 @@ import PlayButton from './PlayButton';
 import SwitchButton from './SwitchButton';
 import LoadingSpinner from './LoadingSpinner';
 
-const AudioPlayer = ({ buffer = null }) => {
+const AudioPlayer = ({ buffers = [null, null] }) => {
+  const [buffer1, buffer2] = buffers;
+  const [curBuffer, setCurBuffer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [audioStart, setAudioStart] = useState(0);
   const [audioPlayer, setAudioPlayer] = useState(null);
@@ -14,17 +16,23 @@ const AudioPlayer = ({ buffer = null }) => {
   const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
-    if (!buffer) return;
+    if (curBuffer === null && buffer1) {
+      setCurBuffer(buffer1);
+    }
+  }, [buffer1, curBuffer, setCurBuffer]);
+
+  useEffect(() => {
+    if (!curBuffer) return;
 
     const playbackOptions = {
       start: audioStart,
-      end: buffer.duration,
+      end: curBuffer.duration,
       loop: false,
       rate: 1,
       volume: 1,
       autoplay: true
     }
-    const playback = playAudio(buffer, playbackOptions);
+    const playback = playAudio(curBuffer, playbackOptions);
     setAudioPlayer(playback);
 
     if (audioStart > 0) {
@@ -33,21 +41,21 @@ const AudioPlayer = ({ buffer = null }) => {
     }
 
     return () => playback.pause();
-  }, [audioStart, buffer]);
+  }, [audioStart, curBuffer]);
 
   useEffect(() => {
     if (!audioPlaying && currentTime) {
       const playbackOptions = {
         start: currentTime,
-        end: buffer.duration,
+        end: curBuffer.duration,
         loop: false,
         rate: 1,
         volume: 1,
         autoplay: true
       }
-      setAudioPlayer(playAudio(buffer, playbackOptions));
+      setAudioPlayer(playAudio(curBuffer, playbackOptions));
     }
-  }, [audioPlaying, currentTime, buffer]);
+  }, [audioPlaying, currentTime, curBuffer]);
 
   const handleToggleAudio = () => {
     if (!audioPlayer) return;
@@ -62,6 +70,14 @@ const AudioPlayer = ({ buffer = null }) => {
     }
   }
 
+  const handleSwitchAudio = () => {
+    if (curBuffer === buffer1) {
+      setCurBuffer(buffer2);
+    } else {
+      setCurBuffer(buffer1);
+    }
+  }
+
   const width = 1000;
   const height = 100;
 
@@ -70,12 +86,12 @@ const AudioPlayer = ({ buffer = null }) => {
       <div className='audio-player__buttons'>
         <PlayButton onClick={handleToggleAudio} active={audioPlaying} />
 
-        <SwitchButton onClick={e => console.log(e)} />
+        <SwitchButton onClick={handleSwitchAudio} />
       </div>
 
       <div className='sound-bar__container'>
         <SoundBars
-          buffer={buffer}
+          buffer={curBuffer}
           width={width}
           height={height}
           onClick={({ second }) => setAudioStart(second)}
