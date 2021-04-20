@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 
-const STEP_SAMPLE_SIZE = 2;
 const STEP_WIDTH = 1;
+const ENTIRE_STEP_WIDTH = (STEP_WIDTH * 3);
 
 const SoundBars = ({
   buffer = null,
@@ -12,7 +12,7 @@ const SoundBars = ({
   onClick = () => {},
 }) => {
   const canvasRef = useRef(null);
-  const samples = Math.ceil(width / STEP_SAMPLE_SIZE);
+  const samples = Math.ceil(width / (ENTIRE_STEP_WIDTH * 2));
 
   /**
    * Filters the AudioBuffer retrieved from an external source
@@ -32,7 +32,27 @@ const SoundBars = ({
       filteredData.push(sum / blockSize); // divide the sum by the block size to get the average
     }
     return filteredData;
-  }, []);
+  }, [samples]);
+
+  /**
+   * A utility function for drawing our line segments
+   * @param {AudioContext} ctx the audio context 
+   * @param {number} x  the x coordinate of the beginning of the line segment
+   * @param {number} height the desired height of the line segment
+   * @param {number} width the desired width of the line segment
+   * @param {boolean} isEven whether or not the segmented is even-numbered
+   */
+  const drawLineSegment = useCallback((ctx, x, height, width, isEven) => {
+    ctx.lineWidth = STEP_WIDTH;
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    height = isEven ? height : -height;
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, height);
+    ctx.arc(x + width / 2, height, width / 2, Math.PI, 0, isEven);
+    ctx.lineTo(x + width, 0);
+    ctx.stroke();
+  }, [color]);
 
   /**
    * Draws the audio file into a canvas element.
@@ -51,38 +71,17 @@ const SoundBars = ({
     ctx.translate(0, canvas.height / 4);
 
     // draw the line segments
-    const _width = width / normalizedData.length;
     for (let i = 0; i < normalizedData.length; i++) {
-      const x = _width * i;
+      const x = ENTIRE_STEP_WIDTH * i;
       let height = normalizedData[i] * canvas.height;
       if (height < 0) {
           height = 0;
       } else if (height > canvas.height / 2) {
           height = height > canvas.height / 2;
       }
-      drawLineSegment(ctx, x, height - padding, _width, (i + 1) % 2);
+      drawLineSegment(ctx, x, height - padding, ENTIRE_STEP_WIDTH, (i + 1) % 2);
     }
-  }, []);
-
-  /**
-   * A utility function for drawing our line segments
-   * @param {AudioContext} ctx the audio context 
-   * @param {number} x  the x coordinate of the beginning of the line segment
-   * @param {number} height the desired height of the line segment
-   * @param {number} width the desired width of the line segment
-   * @param {boolean} isEven whether or not the segmented is even-numbered
-   */
-  const drawLineSegment = (ctx, x, height, width, isEven) => {
-    ctx.lineWidth = STEP_WIDTH;
-    ctx.strokeStyle = color;
-    ctx.beginPath();
-    height = isEven ? height : -height;
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, height);
-    ctx.arc(x + width / 2, height, width / 2, Math.PI, 0, isEven);
-    ctx.lineTo(x + width, 0);
-    ctx.stroke();
-  };
+  }, [height, width, drawLineSegment]);
 
   useEffect(() => {
     if (!buffer || !canvasRef) return;
