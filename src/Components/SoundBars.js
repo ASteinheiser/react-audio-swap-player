@@ -63,7 +63,6 @@ const SoundBars = ({
     // set up the canvas
     let canvas = canvasRef.current;
     const dpr = window.devicePixelRatio || 1;
-    const padding = 8;
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext("2d");
@@ -75,11 +74,11 @@ const SoundBars = ({
       const x = ENTIRE_STEP_WIDTH * i;
       let height = normalizedData[i] * canvas.height;
       if (height < 0) {
-          height = 0;
+        height = 0;
       } else if (height > canvas.height / 2) {
-          height = height > canvas.height / 2;
+        height = canvas.height / 2;
       }
-      drawLineSegment(ctx, x, height - padding, ENTIRE_STEP_WIDTH, (i + 1) % 2);
+      drawLineSegment(ctx, x, (height * .65), ENTIRE_STEP_WIDTH, (i + 1) % 2);
     }
   }, [height, width, drawLineSegment]);
 
