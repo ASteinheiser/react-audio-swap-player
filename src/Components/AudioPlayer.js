@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import playAudio from 'audio-play';
 
 import TimeIndicator from './TimeIndicator';
@@ -6,6 +6,9 @@ import SoundBars from './SoundBars';
 import PlayButton from './PlayButton';
 import SwitchButton from './SwitchButton';
 import LoadingSpinner from './LoadingSpinner';
+
+const WIDTH = 1000;
+const HEIGHT = 100;
 
 const AudioPlayer = ({ buffers = [null, null] }) => {
   const [buffer1, buffer2] = buffers;
@@ -79,11 +82,16 @@ const AudioPlayer = ({ buffers = [null, null] }) => {
     }
   }
 
-  const width = 1000;
-  const height = 100;
+  const getTimeOffsetPx = useMemo(() => {
+    if (!curBuffer) return;
+
+    const currentTimePercentage = currentTime / curBuffer.duration;
+    return WIDTH * currentTimePercentage;
+  }, // eslint-disable-next-line react-hooks/exhaustive-deps
+  [curBuffer, currentTime, audioPlaying])
 
   return (
-    <div className='audio-player__container' style={{ width }}>
+    <div className='audio-player__container' style={{ width: WIDTH }}>
       <div className='audio-player__buttons'>
         <PlayButton onClick={handleToggleAudio} active={audioPlaying} />
 
@@ -93,17 +101,17 @@ const AudioPlayer = ({ buffers = [null, null] }) => {
       <div className='sound-bar__container'>
         <SoundBars
           buffer={curBuffer}
-          width={width}
-          height={height}
+          width={WIDTH}
+          height={HEIGHT}
           onClick={({ second }) => setAudioStart(second)}
           onDone={() => setLoading(false)}
         />
 
         {!loading && (
           <TimeIndicator
-            height={height}
             playing={audioPlaying}
-            currentTime={currentTime}
+            timeOffsetPx={() => getTimeOffsetPx()}
+            secondsRemaining={curBuffer.duration - currentTime}
           />
         )}
 
