@@ -14,8 +14,7 @@ const AudioPlayer = ({ buffers = [null, null] }) => {
   const [buffer1, buffer2] = buffers;
   const [curBuffer, setCurBuffer] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [audioStart, setAudioStart] = useState(0);
-  const [audioPlayer, setAudioPlayer] = useState(null);
+  const [toggleAudio, setToggleAudio] = useState(null);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
 
@@ -29,57 +28,31 @@ const AudioPlayer = ({ buffers = [null, null] }) => {
     if (!curBuffer) return;
 
     const playbackOptions = {
-      start: audioStart,
+      start: currentTime,
       end: curBuffer.duration,
       loop: false,
       rate: 1,
       volume: 1,
       autoplay: true
     }
-    const playback = playAudio(curBuffer, playbackOptions);
-    setAudioPlayer(playback);
+    const play = playAudio(curBuffer, playbackOptions);
+    setToggleAudio(() => play());
 
-    if (audioStart > 0) {
-      playback.play();
-      setAudioPlaying(true);
+    return () => {
+      play.pause();
     }
-
-    return () => playback.pause();
-  }, [audioStart, curBuffer]);
-
-  useEffect(() => {
-    if (!audioPlaying && currentTime) {
-      const playbackOptions = {
-        start: currentTime,
-        end: curBuffer.duration,
-        loop: false,
-        rate: 1,
-        volume: 1,
-        autoplay: true
-      }
-      setAudioPlayer(playAudio(curBuffer, playbackOptions));
-    }
-  }, [audioPlaying, currentTime, curBuffer]);
+  }, [currentTime, curBuffer]);
 
   const handleToggleAudio = () => {
-    if (!audioPlayer) return;
-    setCurrentTime(audioPlayer.currentTime);
+    if (!toggleAudio) return;
 
-    if (audioPlaying) {
-      audioPlayer.pause();
-      setAudioPlaying(false);
-    } else {
-      audioPlayer.play();
-      setAudioPlaying(true);
-    }
+    setCurrentTime(toggleAudio.currentTime);
+    setAudioPlaying(!audioPlaying);
+    setToggleAudio(() => toggleAudio());
   }
 
   const handleSwitchAudio = () => {
-    if (curBuffer === buffer1) {
-      setCurBuffer(buffer2);
-    } else {
-      setCurBuffer(buffer1);
-    }
+    setCurBuffer(curBuffer === buffer1 ? buffer2 : buffer1);
   }
 
   const getTimeOffsetPx = useMemo(() => {
@@ -103,7 +76,7 @@ const AudioPlayer = ({ buffers = [null, null] }) => {
           buffer={curBuffer}
           width={WIDTH}
           height={HEIGHT}
-          onClick={({ second }) => setAudioStart(second)}
+          onClick={({ second }) => setCurrentTime(second)}
           onDone={() => setLoading(false)}
         />
 
