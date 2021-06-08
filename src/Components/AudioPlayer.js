@@ -18,13 +18,16 @@ const _AudioPlayer = ({
     return <LoadingSpinner />
   }
 
+  const updateTimeIndicator = (curTime, totalTime) => {
+    console.log({ curTime, totalTime })
+  }
+
   return (
     <AudioPlayer
       src={urls[1]}
-      style={{
-        width: WIDTH,
-        height: SOUND_BAR_HEIGHT + CONTROLS_HEIGHT,
-        padding: '12px 0'
+      listenInterval={250}
+      onListen={({ target }) => {
+        updateTimeIndicator(target.currentTime, target.duration)
       }}
       customProgressBarSection={[
         <>
@@ -39,6 +42,11 @@ const _AudioPlayer = ({
           />
         </>
       ]}
+      style={{
+        width: WIDTH,
+        height: SOUND_BAR_HEIGHT + CONTROLS_HEIGHT,
+        padding: '12px 0'
+      }}
     />
   );
 };
