@@ -49,7 +49,6 @@
 
 .time-indicator__line {
   position: absolute;
-  height: calc(100% - 20px);
 
   width: 4px;
   border-radius: 2px;

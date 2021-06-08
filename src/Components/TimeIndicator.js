@@ -1,6 +1,6 @@
 import { keyframes } from 'styled-components';
 
-const TimeIndicator = ({ timeOffsetPx, secondsRemaining, playing }) => {
+const TimeIndicator = ({ secondsRemaining, playing, height }) => {
   const animation = keyframes`
     0% { left: 12px; }
     100% { left: calc(100% - 12px); }
@@ -10,6 +10,7 @@ const TimeIndicator = ({ timeOffsetPx, secondsRemaining, playing }) => {
     <div
       className='time-indicator__line'
       style={{
+        height,
         animationName: animation,
         animationDuration: `${secondsRemaining}s`,
         animationTimingFunction: 'linear',

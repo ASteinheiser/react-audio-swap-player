@@ -17,7 +17,12 @@ const App = () => {
 
   useEffect(() => fetchSongBuffers(), []);
 
-  return <AudioPlayer buffers={buffers} />;
+  return (
+    <AudioPlayer
+      buffers={buffers}
+      urls={[MusicURL1, MusicURL2]}
+    />
+  );
 }
 
 export default App;

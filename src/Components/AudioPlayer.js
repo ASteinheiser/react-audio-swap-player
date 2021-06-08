@@ -1,97 +1,46 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import playAudio from 'audio-play';
+import React from 'react';
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
 
 import TimeIndicator from './TimeIndicator';
 import SoundBars from './SoundBars';
-import PlayButton from './PlayButton';
-import SwitchButton from './SwitchButton';
 import LoadingSpinner from './LoadingSpinner';
 
 const WIDTH = 1000;
-const HEIGHT = 100;
+const SOUND_BAR_HEIGHT = 100;
+const CONTROLS_HEIGHT = 70;
 
-const AudioPlayer = ({ buffers = [null, null] }) => {
-  const [buffer1, buffer2] = buffers;
-  const [curBuffer, setCurBuffer] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [toggleAudio, setToggleAudio] = useState(null);
-  const [audioPlaying, setAudioPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-
-  useEffect(() => {
-    if (curBuffer === null && buffer1) {
-      setCurBuffer(buffer1);
-    }
-  }, [buffer1, curBuffer, setCurBuffer]);
-
-  useEffect(() => {
-    if (!curBuffer) return;
-
-    const playbackOptions = {
-      start: currentTime,
-      end: curBuffer.duration,
-      loop: false,
-      rate: 1,
-      volume: 1,
-      autoplay: true
-    }
-    const play = playAudio(curBuffer, playbackOptions);
-    setToggleAudio(() => play());
-
-    return () => {
-      play.pause();
-    }
-  }, [currentTime, curBuffer]);
-
-  const handleToggleAudio = () => {
-    if (!toggleAudio) return;
-
-    setCurrentTime(toggleAudio.currentTime);
-    setAudioPlaying(!audioPlaying);
-    setToggleAudio(() => toggleAudio());
+const _AudioPlayer = ({
+  buffers = [null, null],
+  urls = [null, null]
+}) => {
+  if (!buffers[1] || !urls[1]) {
+    return <LoadingSpinner />
   }
-
-  const handleSwitchAudio = () => {
-    setCurBuffer(curBuffer === buffer1 ? buffer2 : buffer1);
-  }
-
-  const getTimeOffsetPx = useMemo(() => {
-    if (!curBuffer) return;
-
-    const currentTimePercentage = currentTime / curBuffer.duration;
-    return WIDTH * currentTimePercentage;
-  }, // eslint-disable-next-line react-hooks/exhaustive-deps
-  [curBuffer, currentTime, audioPlaying])
 
   return (
-    <div className='audio-player__container' style={{ width: WIDTH }}>
-      <div className='audio-player__buttons'>
-        <PlayButton onClick={handleToggleAudio} active={audioPlaying} />
-
-        <SwitchButton onClick={handleSwitchAudio} />
-      </div>
-
-      <div className='sound-bar__container'>
-        <SoundBars
-          buffer={curBuffer}
-          width={WIDTH}
-          height={HEIGHT}
-          onClick={({ second }) => setCurrentTime(second)}
-          onDone={() => setLoading(false)}
-        />
-
-        {!loading && (
-          <TimeIndicator
-            playing={audioPlaying}
-            timeOffsetPx={() => getTimeOffsetPx()}
-            secondsRemaining={curBuffer.duration - currentTime}
+    <AudioPlayer
+      src={urls[1]}
+      style={{
+        width: WIDTH,
+        height: SOUND_BAR_HEIGHT + CONTROLS_HEIGHT,
+        padding: '12px 0'
+      }}
+      customProgressBarSection={[
+        <>
+          <SoundBars
+            buffer={buffers[1]}
+            width={WIDTH}
+            height={SOUND_BAR_HEIGHT}
           />
-        )}
-
-        {loading && <LoadingSpinner className='loading-spinner__container' />}
-      </div>
-    </div>
+          <TimeIndicator
+            height={SOUND_BAR_HEIGHT}
+            secondsRemaining={buffers[1].duration}
+          />
+        </>
+      ]}
+    />
   );
 };
 
-export default AudioPlayer;
+export default _AudioPlayer;
