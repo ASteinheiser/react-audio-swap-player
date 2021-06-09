@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSync, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import '@fontsource/baloo-tammudu-2';
 
 import App from './App';
 import './index.css';
