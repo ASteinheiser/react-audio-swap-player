@@ -23,16 +23,11 @@
   flex-direction: row;
 }
 
-.play-button__container {
-  margin: 24px 24px 12px;
-}
-
 .switch-button__container {
   margin: 12px 24px 24px;
 }
 
-.switch-button__container:hover,
-.play-button__container:hover {
+.switch-button__container:hover {
   cursor: pointer;
   color: rgba(0, 0, 0, 0.5);
 }
