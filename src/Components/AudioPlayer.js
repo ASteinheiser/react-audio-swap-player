@@ -5,6 +5,7 @@ import 'react-h5-audio-player/lib/styles.css';
 import TimeIndicator from './TimeIndicator';
 import SoundBars from './SoundBars';
 import SwitchButton from './SwitchButton';
+import TitleDisplay from './TitleDisplay';
 import LoadingSpinner from './LoadingSpinner';
 
 const WIDTH = 1000;
@@ -121,8 +122,12 @@ const _AudioPlayer = ({
         customProgressBarSection={[renderProgressBar()]}
         customAdditionalControls={[renderSwitchTrackButton()]}
       />
-      <div>{currentSong.name}</div>
-      <div>{getFormattedTimeStamp()}</div>
+      
+      <TitleDisplay
+        name={currentSong.name}
+        timeStamp={getFormattedTimeStamp()}
+        width={WIDTH}
+      />
     </>
   );
 };
