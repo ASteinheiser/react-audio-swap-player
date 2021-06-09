@@ -96,7 +96,7 @@ const SoundBars = ({
 
     const songPositionPercentage = e.nativeEvent.offsetX / width;
     const second = buffer.duration * songPositionPercentage;
-    onClick({ second, totalSeconds: buffer.duration });
+    onClick({ second });
   }
 
   return (

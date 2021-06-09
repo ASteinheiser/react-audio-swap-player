@@ -2,27 +2,27 @@ import React, { useEffect, useState } from 'react';
 import load from 'audio-loader';
 
 import AudioPlayer from './Components/AudioPlayer';
-
-const MusicURL1 = 'https://test-audio-file.s3-us-west-2.amazonaws.com/Bakar+-+Hell+N+Back+(Official+Video).mp3';
-const MusicURL2 = 'https://test-audio-file.s3-us-west-2.amazonaws.com/Tame+Impala+-+The+Less+I+Know+the+Better+(Official+Audio).mp3';
+import MusicData from './data.json';
 
 const App = () => {
   const [buffers, setBuffers] = useState([null, null]);
+  const [loading, setLoading] = useState(true);
 
   const fetchSongBuffers = async () => {
-    const song1 = await load(MusicURL1);
-    const song2 = await load(MusicURL2);
-    setBuffers([song1, song2]);
+    setBuffers([
+      await load(MusicData[0].url),
+      await load(MusicData[1].url)
+    ]);
+    setLoading(false);
   };
 
   useEffect(() => fetchSongBuffers(), []);
 
-  return (
-    <AudioPlayer
-      buffers={buffers}
-      urls={[MusicURL1, MusicURL2]}
-    />
-  );
+  const data = [...MusicData];
+  data[0].buffer = buffers[0];
+  data[1].buffer = buffers[1];
+
+  return <AudioPlayer data={data} loading={loading} />;
 }
 
 export default App;
