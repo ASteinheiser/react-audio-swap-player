@@ -4,6 +4,7 @@ import 'react-h5-audio-player/lib/styles.css';
 
 import TimeIndicator from './TimeIndicator';
 import SoundBars from './SoundBars';
+import SwitchButton from './SwitchButton';
 import LoadingSpinner from './LoadingSpinner';
 
 const WIDTH = 1000;
@@ -16,6 +17,7 @@ const _AudioPlayer = ({
   data = [null, null],
   loading = true
 }) => {
+  const [currentTime, setCurrentTime] = useState(0);
   const [currentSong, setCurrentSong] = useState(null);
   const [indicatorPosition, setIndicatorPosition] = useState(0);
   const playerRef = useRef();
@@ -26,7 +28,24 @@ const _AudioPlayer = ({
     }
   }, [currentSong, data])
 
+  useEffect(() => {
+    if (currentSong !== null && playerRef.current) {
+      playerRef.current.audio.current.currentTime = currentTime;
+    }
+  }, [currentSong, currentTime])
+
   if (loading || !currentSong) return <LoadingSpinner />;
+
+  const handleChangeSong = () => {
+    if (!playerRef.current) return;
+    setCurrentTime(playerRef.current.audio.current.currentTime)
+
+    if (currentSong.url === data[0].url) {
+      setCurrentSong(data[1]);
+    } else {
+      setCurrentSong(data[0]);
+    }
+  }
 
   const updateTimeIndicator = (curTime, totalTime) => {
     const songTimePercentage = curTime / totalTime;
@@ -42,9 +61,9 @@ const _AudioPlayer = ({
   }
 
   const onClickSoundBars = ({ second }) => {
-    if (playerRef.current) {
-      playerRef.current.audio.current.currentTime = second;
-    }
+    if (!playerRef.current) return;
+    playerRef.current.audio.current.currentTime = second;
+
     updateTimeIndicator(second, currentSong.buffer.duration);
   }
 
@@ -64,7 +83,7 @@ const _AudioPlayer = ({
   )
 
   const renderSwitchTrackButton = () => (
-    <div />
+    <SwitchButton onClick={handleChangeSong} />
   )
 
   return (
