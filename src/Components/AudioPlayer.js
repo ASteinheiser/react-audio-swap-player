@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 
@@ -16,6 +16,7 @@ const _AudioPlayer = ({
   urls = [null, null]
 }) => {
   const [indicatorPosition, setIndicatorPosition] = useState(0);
+  const playerRef = useRef();
 
   if (!buffers[1] || !urls[1]) {
     return <LoadingSpinner />;
@@ -32,6 +33,7 @@ const _AudioPlayer = ({
 
   return (
     <AudioPlayer
+      ref={playerRef}
       src={urls[1]}
       listenInterval={250}
       onListen={({ target }) => {
@@ -43,9 +45,15 @@ const _AudioPlayer = ({
             buffer={buffers[1]}
             width={WIDTH}
             height={SOUND_BAR_HEIGHT}
+            onClick={({ second, totalSeconds }) => {
+              if (playerRef.current) {
+                playerRef.current.audio.current.currentTime = second;
+              }
+              updateTimeIndicator(second, totalSeconds);
+            }}
           />
           <TimeIndicator
-            height={SOUND_BAR_HEIGHT}
+            height={SOUND_BAR_HEIGHT + 10}
             position={indicatorPosition}
           />
         </>
