@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 
@@ -7,6 +7,7 @@ import SoundBars from './SoundBars';
 import LoadingSpinner from './LoadingSpinner';
 
 const WIDTH = 1000;
+const INDICATOR_WIDTH = 4;
 const SOUND_BAR_HEIGHT = 100;
 const CONTROLS_HEIGHT = 70;
 
@@ -14,12 +15,19 @@ const _AudioPlayer = ({
   buffers = [null, null],
   urls = [null, null]
 }) => {
+  const [indicatorPosition, setIndicatorPosition] = useState(0);
+
   if (!buffers[1] || !urls[1]) {
-    return <LoadingSpinner />
+    return <LoadingSpinner />;
   }
 
   const updateTimeIndicator = (curTime, totalTime) => {
-    console.log({ curTime, totalTime })
+    const songTimePercentage = curTime / totalTime;
+    let indicatorPositionPx = songTimePercentage * WIDTH;
+    if (indicatorPositionPx > WIDTH - INDICATOR_WIDTH) {
+      indicatorPositionPx = WIDTH - INDICATOR_WIDTH;
+    }
+    setIndicatorPosition(indicatorPositionPx);
   }
 
   return (
@@ -38,7 +46,7 @@ const _AudioPlayer = ({
           />
           <TimeIndicator
             height={SOUND_BAR_HEIGHT}
-            secondsRemaining={buffers[1].duration}
+            position={indicatorPosition}
           />
         </>
       ]}

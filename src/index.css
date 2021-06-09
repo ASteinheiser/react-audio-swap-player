@@ -53,4 +53,10 @@
   width: 4px;
   border-radius: 2px;
   background-color: rgba(0, 0, 0, 0.8);
+
+  transition: left 0.4s linear 0s;
+}
+
+.rhap_progress-section {
+  position: relative;
 }
