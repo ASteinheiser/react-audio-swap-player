@@ -17,8 +17,8 @@ const _AudioPlayer = ({
   data = [null, null],
   loading = true
 }) => {
-  const [currentTime, setCurrentTime] = useState(0);
   const [currentSong, setCurrentSong] = useState(null);
+  const [timeBeforeSwitch, setTimeBeforeSwitch] = useState(0);
   const [indicatorPosition, setIndicatorPosition] = useState(0);
   const playerRef = useRef();
 
@@ -30,21 +30,41 @@ const _AudioPlayer = ({
 
   useEffect(() => {
     if (currentSong !== null && playerRef.current) {
-      playerRef.current.audio.current.currentTime = currentTime;
+      playerRef.current.audio.current.currentTime = timeBeforeSwitch;
     }
-  }, [currentSong, currentTime])
+  }, [currentSong, timeBeforeSwitch])
 
   if (loading || !currentSong) return <LoadingSpinner />;
 
   const handleChangeSong = () => {
     if (!playerRef.current) return;
-    setCurrentTime(playerRef.current.audio.current.currentTime)
+    setTimeBeforeSwitch(playerRef.current.audio.current.currentTime);
 
     if (currentSong.url === data[0].url) {
       setCurrentSong(data[1]);
     } else {
       setCurrentSong(data[0]);
     }
+  }
+
+  const getFormattedTimeStamp = () => {
+    const currentTime = formatTime(
+      playerRef.current ?
+        playerRef.current.audio.current.currentTime : 0
+    );
+    const totalTime = formatTime(currentSong.buffer.duration);
+
+    return `${currentTime} / ${totalTime}`;
+  }
+
+  const formatTime = timeSeconds => {
+    timeSeconds = Math.ceil(timeSeconds);
+    const timeMinutes = Math.floor(timeSeconds / 60);
+    const timeSecondsRemainder = timeSeconds % 60;
+    const timeMinutesFormatted = timeMinutes < 10 ? '0' + timeMinutes : timeMinutes;
+    const timeSecondsFormatted = timeSecondsRemainder < 10 ? '0' + timeSecondsRemainder : timeSecondsRemainder;
+
+    return `${timeMinutesFormatted}:${timeSecondsFormatted}`;
   }
 
   const updateTimeIndicator = (curTime, totalTime) => {
@@ -87,19 +107,23 @@ const _AudioPlayer = ({
   )
 
   return (
-    <AudioPlayer
-      src={currentSong.url}
-      ref={playerRef}
-      style={{
-        width: WIDTH,
-        height: SOUND_BAR_HEIGHT + CONTROLS_HEIGHT,
-        padding: '12px 0'
-      }}
-      listenInterval={250}
-      onListen={onAudioTimeUpdate}
-      customProgressBarSection={[renderProgressBar()]}
-      customAdditionalControls={[renderSwitchTrackButton()]}
-    />
+    <>
+      <AudioPlayer
+        src={currentSong.url}
+        ref={playerRef}
+        style={{
+          width: WIDTH,
+          height: SOUND_BAR_HEIGHT + CONTROLS_HEIGHT,
+          padding: '12px 0'
+        }}
+        listenInterval={250}
+        onListen={onAudioTimeUpdate}
+        customProgressBarSection={[renderProgressBar()]}
+        customAdditionalControls={[renderSwitchTrackButton()]}
+      />
+      <div>{currentSong.name}</div>
+      <div>{getFormattedTimeStamp()}</div>
+    </>
   );
 };
 
