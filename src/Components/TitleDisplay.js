@@ -6,7 +6,7 @@ const TitleDisplay = ({ width, name, timeStamp }) => {
       className='title-display__container'
       style={{
         width: width - (2 * PADDING),
-        padding: `${PADDING}px ${PADDING}px ${PADDING}px`
+        padding: `${PADDING}px ${PADDING}px 0`
       }}>
       <div>{name}</div>
       <div>{timeStamp}</div>

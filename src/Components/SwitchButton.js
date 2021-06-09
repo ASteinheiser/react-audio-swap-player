@@ -6,7 +6,7 @@ const SwitchButton = ({
 }) => {
   return (
     <div className='switch-button__container' onClick={onClick}>
-      <FontAwesomeIcon icon='sync' style={{ fontSize: 32 }} />
+      <FontAwesomeIcon icon='sync' style={{ fontSize: 28 }} />
     </div>
   );
 };
