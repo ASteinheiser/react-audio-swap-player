@@ -35,8 +35,6 @@ const _AudioPlayer = ({
     }
   }, [currentSong, timeBeforeSwitch])
 
-  if (loading || !currentSong) return <LoadingSpinner />;
-
   const handleChangeSong = () => {
     if (!playerRef.current) return;
     setTimeBeforeSwitch(playerRef.current.audio.current.currentTime);
@@ -53,7 +51,10 @@ const _AudioPlayer = ({
       playerRef.current ?
         playerRef.current.audio.current.currentTime : 0
     );
-    const totalTime = formatTime(currentSong.buffer.duration);
+    const totalTime = formatTime(
+      currentSong && currentSong.buffer ?
+        currentSong.buffer.duration : 0
+    );
 
     return `${currentTime} / ${totalTime}`;
   }
@@ -107,24 +108,33 @@ const _AudioPlayer = ({
     <SwitchButton onClick={handleChangeSong} />
   )
 
+  const audioPlayerDimensions = {
+    width: WIDTH,
+    height: SOUND_BAR_HEIGHT + CONTROLS_HEIGHT,
+  };
+
   return (
     <>
-      <AudioPlayer
-        src={currentSong.url}
-        ref={playerRef}
-        style={{
-          width: WIDTH,
-          height: SOUND_BAR_HEIGHT + CONTROLS_HEIGHT,
-          padding: '12px 0'
-        }}
-        listenInterval={250}
-        onListen={onAudioTimeUpdate}
-        customProgressBarSection={[renderProgressBar()]}
-        customAdditionalControls={[renderSwitchTrackButton()]}
-      />
+      {(loading || !currentSong)
+        ? <LoadingSpinner style={audioPlayerDimensions} />
+        : (
+          <AudioPlayer
+            src={currentSong.url}
+            ref={playerRef}
+            style={{
+              ...audioPlayerDimensions,
+              padding: '12px 0'
+            }}
+            listenInterval={250}
+            onListen={onAudioTimeUpdate}
+            customProgressBarSection={[renderProgressBar()]}
+            customAdditionalControls={[renderSwitchTrackButton()]}
+          />
+        )
+      }
       
       <TitleDisplay
-        name={currentSong.name}
+        name={currentSong ? currentSong.name : '---'}
         timeStamp={getFormattedTimeStamp()}
         width={WIDTH}
       />

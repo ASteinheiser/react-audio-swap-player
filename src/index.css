@@ -39,13 +39,16 @@ body {
 }
 
 .loading-spinner__container {
-  position: absolute;
-  top: calc(50% - 18px);
-  left: calc(50% - 18px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow: 0 0 3px 0 rgb(0 0 0 / 20%);
 }
 
 .loading-spinner__icon {
-  font-size: 36px;
+  color: #868686;
+  font-size: 48px;
 }
 
 .time-indicator__line {
