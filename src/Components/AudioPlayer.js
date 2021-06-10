@@ -60,7 +60,7 @@ const _AudioPlayer = ({
   }
 
   const formatTime = timeSeconds => {
-    timeSeconds = Math.ceil(timeSeconds);
+    timeSeconds = Math.floor(timeSeconds);
     const timeMinutes = Math.floor(timeSeconds / 60);
     const timeSecondsRemainder = timeSeconds % 60;
     const timeMinutesFormatted = timeMinutes < 10 ? '0' + timeMinutes : timeMinutes;
