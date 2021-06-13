@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import AudioPlayer from 'react-h5-audio-player';
-import 'react-h5-audio-player/lib/styles.css';
+import throttle from 'lodash.throttle';
 
-import TimeIndicator from './TimeIndicator';
+import PlayButton from './PlayButton';
+import SwapButton from './SwapButton';
 import SoundBars from './SoundBars';
-import SwitchButton from './SwitchButton';
-import TitleDisplay from './TitleDisplay';
+import TimeIndicator from './TimeIndicator';
 import LoadingSpinner from './LoadingSpinner';
 
 const WIDTH = 1000;
@@ -18,55 +17,32 @@ const _AudioPlayer = ({
   data = [null, null],
   loading = true
 }) => {
-  const [currentSong, setCurrentSong] = useState(null);
-  const [timeBeforeSwitch, setTimeBeforeSwitch] = useState(0);
+  const [setupListeners, setSetupListeners] = useState(true);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [currentSong, setCurrentSong] = useState(undefined);
   const [indicatorPosition, setIndicatorPosition] = useState(0);
-  const playerRef = useRef();
+  data[0].playerRef = useRef();
+  data[1].playerRef = useRef();
 
-  useEffect(() => {
-    if (currentSong === null && data[0] !== null) {
-      setCurrentSong(data[0]);
-    }
-  }, [currentSong, data])
-
-  useEffect(() => {
-    if (currentSong !== null && playerRef.current) {
-      playerRef.current.audio.current.currentTime = timeBeforeSwitch;
-    }
-  }, [currentSong, timeBeforeSwitch])
-
-  const handleChangeSong = () => {
-    if (!playerRef.current) return;
-    setTimeBeforeSwitch(playerRef.current.audio.current.currentTime);
-
-    if (currentSong.url === data[0].url) {
-      setCurrentSong(data[1]);
-    } else {
-      setCurrentSong(data[0]);
-    }
+  const handlePlayButtonClick = () => {
+    setIsAudioPlaying(true);
+    data[currentSong].playerRef.current.play();
   }
 
-  const getFormattedTimeStamp = () => {
-    const currentTime = formatTime(
-      playerRef.current ?
-        playerRef.current.audio.current.currentTime : 0
-    );
-    const totalTime = formatTime(
-      currentSong && currentSong.buffer ?
-        currentSong.buffer.duration : 0
-    );
-
-    return `${currentTime} / ${totalTime}`;
+  const handlePauseButtonClick = () => {
+    setIsAudioPlaying(false);
+    data[currentSong].playerRef.current.pause();
   }
 
-  const formatTime = timeSeconds => {
-    timeSeconds = Math.floor(timeSeconds);
-    const timeMinutes = Math.floor(timeSeconds / 60);
-    const timeSecondsRemainder = timeSeconds % 60;
-    const timeMinutesFormatted = timeMinutes < 10 ? '0' + timeMinutes : timeMinutes;
-    const timeSecondsFormatted = timeSecondsRemainder < 10 ? '0' + timeSecondsRemainder : timeSecondsRemainder;
+  const handleSwapButtonClick = () => {
+    if (isAudioPlaying) data[currentSong].playerRef.current.pause();
+    const currentTime = data[currentSong].playerRef.current.currentTime;
 
-    return `${timeMinutesFormatted}:${timeSecondsFormatted}`;
+    const newCurrentSong = currentSong === 0 ? 1 : 0;
+    data[newCurrentSong].playerRef.current.currentTime = currentTime;
+    setCurrentSong(newCurrentSong);
+
+    if (isAudioPlaying) data[newCurrentSong].playerRef.current.play();
   }
 
   const updateTimeIndicator = (curTime, totalTime) => {
@@ -78,35 +54,68 @@ const _AudioPlayer = ({
     setIndicatorPosition(indicatorPositionPx);
   }
 
-  const onAudioTimeUpdate = ({ target }) => {
-    updateTimeIndicator(target.currentTime, target.duration);
-  }
-
   const onClickSoundBars = ({ second }) => {
-    if (!playerRef.current) return;
-    playerRef.current.audio.current.currentTime = second;
+    data[currentSong].playerRef.current.currentTime = second;
 
-    updateTimeIndicator(second, currentSong.buffer.duration);
+    updateTimeIndicator(second, data[currentSong].buffer.duration);
   }
 
-  const renderProgressBar = () => (
-    <>
-      <SoundBars
-        buffer={currentSong.buffer}
-        width={WIDTH}
-        height={SOUND_BAR_HEIGHT}
-        onClick={onClickSoundBars}
-      />
-      <TimeIndicator
-        height={SOUND_BAR_HEIGHT + INDICATOR_HEIGHT_PADDING}
-        position={indicatorPosition}
-      />
-    </>
-  )
+  useEffect(() => {
+    if (setupListeners && data[0]?.playerRef?.current && data[1]?.playerRef?.current) {
+      setSetupListeners(false);
+      data[0].playerRef.current.addEventListener(
+        'timeupdate',
+        throttle(({ target }) => {
+          updateTimeIndicator(target.currentTime, target.duration)
+        }, 250)
+      )
+      data[1].playerRef.current.addEventListener(
+        'timeupdate',
+        throttle(({ target }) => {
+          updateTimeIndicator(target.currentTime, target.duration)
+        }, 250)
+      )
+    }
+  }, [data, setupListeners])
 
-  const renderSwitchTrackButton = () => (
-    <SwitchButton onClick={handleChangeSong} />
-  )
+  useEffect(() => {
+    if (currentSong === undefined && data[0] !== null) {
+      setCurrentSong(0);
+    }
+  }, [currentSong, data])
+
+  const renderAudioBars = dataIndex => {
+    let extraStyles = {};
+    if (dataIndex !== currentSong) {
+      extraStyles = {
+        visibility: 'hidden',
+        height: 0,
+        width: 0,
+      };
+    }
+
+    return (
+      <div style={{ position: 'relative', ...extraStyles }}>
+        <audio
+          src={data[dataIndex].url}
+          autoPlay={false}
+          ref={data[dataIndex].playerRef}
+        />
+
+        <SoundBars
+          buffer={data[dataIndex].buffer}
+          width={WIDTH}
+          height={SOUND_BAR_HEIGHT}
+          onClick={onClickSoundBars}
+        />
+
+        <TimeIndicator
+          height={SOUND_BAR_HEIGHT + INDICATOR_HEIGHT_PADDING}
+          position={indicatorPosition}
+        />
+      </div>
+    );
+  }
 
   const audioPlayerDimensions = {
     width: WIDTH,
@@ -115,29 +124,24 @@ const _AudioPlayer = ({
 
   return (
     <>
-      {(loading || !currentSong)
+      {(loading || currentSong === undefined)
         ? <LoadingSpinner style={audioPlayerDimensions} />
         : (
-          <AudioPlayer
-            src={currentSong.url}
-            ref={playerRef}
-            style={{
-              ...audioPlayerDimensions,
-              padding: '12px 0'
-            }}
-            listenInterval={250}
-            onListen={onAudioTimeUpdate}
-            customProgressBarSection={[renderProgressBar()]}
-            customAdditionalControls={[renderSwitchTrackButton()]}
-          />
+          <>
+            {renderAudioBars(0)}
+
+            {renderAudioBars(1)}
+
+            <PlayButton
+              isPlaying={isAudioPlaying}
+              onPlay={handlePlayButtonClick}
+              onPause={handlePauseButtonClick}
+            />
+
+            <SwapButton onClick={handleSwapButtonClick} />
+          </>
         )
       }
-      
-      <TitleDisplay
-        name={currentSong ? currentSong.name : '---'}
-        timeStamp={getFormattedTimeStamp()}
-        width={WIDTH}
-      />
     </>
   );
 };

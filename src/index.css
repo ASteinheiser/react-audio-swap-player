@@ -53,6 +53,7 @@ body {
 
 .time-indicator__line {
   position: absolute;
+  top: 0;
 
   width: 4px;
   border-radius: 2px;

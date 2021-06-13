@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const SwitchButton = ({
+const SwapButton = ({
   onClick = () => {}
 }) => {
   return (
@@ -11,4 +11,4 @@ const SwitchButton = ({
   );
 };
 
-export default SwitchButton;
+export default SwapButton;
