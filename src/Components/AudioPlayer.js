@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import throttle from 'lodash.throttle';
 
+import TitleDisplay from './TitleDisplay';
 import PlayButton from './PlayButton';
 import SwapButton from './SwapButton';
 import SoundBars from './SoundBars';
@@ -117,31 +118,41 @@ const _AudioPlayer = ({
     );
   }
 
-  const audioPlayerDimensions = {
-    width: WIDTH,
-    height: SOUND_BAR_HEIGHT + CONTROLS_HEIGHT,
-  };
+  if (loading || currentSong === undefined) {
+    return (
+      <LoadingSpinner
+        style={{
+          width: WIDTH,
+          height: SOUND_BAR_HEIGHT + CONTROLS_HEIGHT,
+        }}
+      />
+    );
+  }
 
   return (
     <>
-      {(loading || currentSong === undefined)
-        ? <LoadingSpinner style={audioPlayerDimensions} />
-        : (
-          <>
-            {renderAudioBars(0)}
+      {renderAudioBars(0)}
 
-            {renderAudioBars(1)}
+      {renderAudioBars(1)}
 
-            <PlayButton
-              isPlaying={isAudioPlaying}
-              onPlay={handlePlayButtonClick}
-              onPause={handlePauseButtonClick}
-            />
+      <PlayButton
+        isPlaying={isAudioPlaying}
+        onPlay={handlePlayButtonClick}
+        onPause={handlePauseButtonClick}
+      />
 
-            <SwapButton onClick={handleSwapButtonClick} />
-          </>
-        )
-      }
+      <SwapButton onClick={handleSwapButtonClick} />
+
+      <TitleDisplay
+        name={data[currentSong].name}
+        currentTime={
+          data[currentSong].playerRef?.current
+            ? data[currentSong].playerRef.current.currentTime
+            : 0
+        }
+        totalTime={data[currentSong].buffer.duration}
+        width={WIDTH}
+      />
     </>
   );
 };
