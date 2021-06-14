@@ -9,8 +9,7 @@ import TimeIndicator from './TimeIndicator';
 import LoadingSpinner from './LoadingSpinner';
 
 const SOUND_BAR_WIDTH = 900;
-const SOUND_BAR_HEIGHT = 100;
-const INDICATOR_WIDTH = 4;
+const SOUND_BAR_HEIGHT = 120;
 const BUTTON_SIZE = 24;
 const BUTTON_PADDING = 32;
 const CONTROLS_WIDTH = BUTTON_SIZE + (BUTTON_PADDING * 2);
@@ -50,9 +49,7 @@ const _AudioPlayer = ({
   const updateTimeIndicator = (curTime, totalTime) => {
     const songTimePercentage = curTime / totalTime;
     let indicatorPositionPx = songTimePercentage * SOUND_BAR_WIDTH;
-    if (indicatorPositionPx > SOUND_BAR_WIDTH - INDICATOR_WIDTH) {
-      indicatorPositionPx = SOUND_BAR_WIDTH - INDICATOR_WIDTH;
-    }
+
     setIndicatorPosition(indicatorPositionPx);
   }
 
@@ -116,10 +113,7 @@ const _AudioPlayer = ({
           onClick={onClickSoundBars}
         />
 
-        <TimeIndicator
-          height={SOUND_BAR_HEIGHT}
-          position={indicatorPosition}
-        />
+        <TimeIndicator position={indicatorPosition} />
       </div>
     );
   }

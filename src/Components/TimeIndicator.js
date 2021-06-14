@@ -1,11 +1,8 @@
-const TimeIndicator = ({ height, position }) => {
+const TimeIndicator = ({ position }) => {
   return (
     <div
       className='time-indicator__line'
-      style={{
-        height,
-        left: position,
-      }}
+      style={{ width: position }}
     />
   );
 }

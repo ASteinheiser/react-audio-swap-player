@@ -21,7 +21,7 @@ const TitleDisplay = ({
       className='title-display__container'
       style={{
         width: width - (PADDING_WIDTH * 2),
-        padding: `12px ${PADDING_WIDTH}px 12px`
+        padding: `16px ${PADDING_WIDTH}px 8px`
       }}>
       <div>{`${name} - ${artist}`}</div>
       <div>{`${formatTime(currentTime)} / ${formatTime(totalTime)}`}</div>
