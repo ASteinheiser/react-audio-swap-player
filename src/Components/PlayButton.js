@@ -5,6 +5,7 @@ const PlayButton = ({
   isPlaying = false,
   onPlay = () => {},
   onPause = () => {},
+  size = 28
 }) => {
   const handleClick = () => {
     if (isPlaying) {
@@ -17,9 +18,9 @@ const PlayButton = ({
   return (
     <div className='play-button__container' onClick={handleClick}>
       {isPlaying ? (
-        <FontAwesomeIcon icon='pause' style={{ fontSize: 32 }} /> 
+        <FontAwesomeIcon icon='pause' style={{ fontSize: size }} /> 
       ) : (
-        <FontAwesomeIcon icon='play' style={{ fontSize: 32 }} /> 
+        <FontAwesomeIcon icon='play' style={{ fontSize: size }} /> 
       )}
     </div>
   );

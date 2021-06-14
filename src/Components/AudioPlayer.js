@@ -8,11 +8,12 @@ import SoundBars from './SoundBars';
 import TimeIndicator from './TimeIndicator';
 import LoadingSpinner from './LoadingSpinner';
 
-const WIDTH = 1000;
+const SOUND_BAR_WIDTH = 900;
 const SOUND_BAR_HEIGHT = 100;
-const CONTROLS_HEIGHT = 70;
 const INDICATOR_WIDTH = 4;
-const INDICATOR_HEIGHT_PADDING = 10;
+const BUTTON_SIZE = 24;
+const BUTTON_PADDING = 32;
+const CONTROLS_WIDTH = BUTTON_SIZE + (BUTTON_PADDING * 2);
 
 const _AudioPlayer = ({
   data = [null, null],
@@ -48,9 +49,9 @@ const _AudioPlayer = ({
 
   const updateTimeIndicator = (curTime, totalTime) => {
     const songTimePercentage = curTime / totalTime;
-    let indicatorPositionPx = songTimePercentage * WIDTH;
-    if (indicatorPositionPx > WIDTH - INDICATOR_WIDTH) {
-      indicatorPositionPx = WIDTH - INDICATOR_WIDTH;
+    let indicatorPositionPx = songTimePercentage * SOUND_BAR_WIDTH;
+    if (indicatorPositionPx > SOUND_BAR_WIDTH - INDICATOR_WIDTH) {
+      indicatorPositionPx = SOUND_BAR_WIDTH - INDICATOR_WIDTH;
     }
     setIndicatorPosition(indicatorPositionPx);
   }
@@ -96,7 +97,12 @@ const _AudioPlayer = ({
     }
 
     return (
-      <div style={{ position: 'relative', ...extraStyles }}>
+      <div style={{
+        position: 'relative',
+        backgroundColor: '#191919',
+        height: SOUND_BAR_HEIGHT,
+        ...extraStyles
+      }}>
         <audio
           src={data[dataIndex].url}
           autoPlay={false}
@@ -105,13 +111,13 @@ const _AudioPlayer = ({
 
         <SoundBars
           buffer={data[dataIndex].buffer}
-          width={WIDTH}
+          width={SOUND_BAR_WIDTH}
           height={SOUND_BAR_HEIGHT}
           onClick={onClickSoundBars}
         />
 
         <TimeIndicator
-          height={SOUND_BAR_HEIGHT + INDICATOR_HEIGHT_PADDING}
+          height={SOUND_BAR_HEIGHT}
           position={indicatorPosition}
         />
       </div>
@@ -122,26 +128,37 @@ const _AudioPlayer = ({
     return (
       <LoadingSpinner
         style={{
-          width: WIDTH,
-          height: SOUND_BAR_HEIGHT + CONTROLS_HEIGHT,
+          width: SOUND_BAR_WIDTH,
+          height: SOUND_BAR_HEIGHT,
         }}
       />
     );
   }
 
   return (
-    <>
-      {renderAudioBars(0)}
+    <div
+      className='flex-column background-color'
+      style={{ width: SOUND_BAR_WIDTH - CONTROLS_WIDTH }}
+    >
+      <div className='flex-row'>
+        <div className='flex-column audio-player__buttons'>
+          <PlayButton
+            isPlaying={isAudioPlaying}
+            onPlay={handlePlayButtonClick}
+            onPause={handlePauseButtonClick}
+            size={BUTTON_SIZE}
+          />
 
-      {renderAudioBars(1)}
+          <SwapButton
+            onClick={handleSwapButtonClick}
+            size={BUTTON_SIZE}
+          />
+        </div>
 
-      <PlayButton
-        isPlaying={isAudioPlaying}
-        onPlay={handlePlayButtonClick}
-        onPause={handlePauseButtonClick}
-      />
+        {renderAudioBars(0)}
 
-      <SwapButton onClick={handleSwapButtonClick} />
+        {renderAudioBars(1)}
+      </div>
 
       <TitleDisplay
         name={data[currentSong].name}
@@ -152,9 +169,9 @@ const _AudioPlayer = ({
             : 0
         }
         totalTime={data[currentSong].buffer.duration}
-        width={WIDTH}
+        width={SOUND_BAR_WIDTH + CONTROLS_WIDTH}
       />
-    </>
+    </div>
   );
 };
 

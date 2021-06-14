@@ -7,7 +7,8 @@ const SoundBars = ({
   buffer = null,
   width = 500,
   height = 100,
-  color = 'black',
+  color = '#f3f3f3',
+  background = '#191919',
   onDone = null,
   onClick = () => {},
 }) => {
@@ -104,6 +105,7 @@ const SoundBars = ({
       ref={canvasRef}
       width={width}
       height={height}
+      style={{ background }}
       onClick={handleClick}
     />
   )
