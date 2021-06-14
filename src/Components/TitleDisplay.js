@@ -1,8 +1,9 @@
 const TitleDisplay = ({
-  width,
   name,
+  artist,
   currentTime,
-  totalTime
+  totalTime,
+  width
 }) => {
   const formatTime = timeSeconds => {
     timeSeconds = Math.floor(timeSeconds);
@@ -22,7 +23,7 @@ const TitleDisplay = ({
         width: width - (2 * PADDING),
         padding: PADDING
       }}>
-      <div>{name}</div>
+      <div>{`${name} - ${artist}`}</div>
       <div>{`${formatTime(currentTime)} / ${formatTime(totalTime)}`}</div>
     </div>
   )

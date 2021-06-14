@@ -1,11 +1,13 @@
 [
   {
-    "name": "Song Name (Original)",
+    "name": "Two Directional Lazarus (Indie)",
+    "artist": "Tim Barnett",
     "url": "https://test-audio-file.s3.us-west-2.amazonaws.com/Before+(wav).wav",
     "buffer": null
   },
   {
-    "name": "Song Name (Mastered)",
+    "name": "Two Directional Lazarus (Indie)",
+    "artist": "Tim Barnett",
     "url": "https://test-audio-file.s3.us-west-2.amazonaws.com/After+(wav).wav",
     "buffer": null
   }

@@ -145,6 +145,7 @@ const _AudioPlayer = ({
 
       <TitleDisplay
         name={data[currentSong].name}
+        artist={data[currentSong].artist}
         currentTime={
           data[currentSong].playerRef?.current
             ? data[currentSong].playerRef.current.currentTime
