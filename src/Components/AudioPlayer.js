@@ -13,6 +13,7 @@ const SOUND_BAR_HEIGHT = 120;
 const BUTTON_SIZE = 24;
 const BUTTON_PADDING = 32;
 const CONTROLS_WIDTH = BUTTON_SIZE + (BUTTON_PADDING * 2);
+const STATIC_TOTAL_HEIGHT = 184;
 
 const _AudioPlayer = ({
   data = [null, null],
@@ -132,8 +133,8 @@ const _AudioPlayer = ({
     return (
       <LoadingSpinner
         style={{
-          width: SOUND_BAR_WIDTH,
-          height: SOUND_BAR_HEIGHT,
+          width: SOUND_BAR_WIDTH + CONTROLS_WIDTH,
+          height: STATIC_TOTAL_HEIGHT,
         }}
       />
     );
