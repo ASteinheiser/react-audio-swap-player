@@ -143,7 +143,7 @@ const _AudioPlayer = ({
   return (
     <div
       className='flex-column background-color'
-      style={{ width: SOUND_BAR_WIDTH - CONTROLS_WIDTH }}
+      style={{ width: SOUND_BAR_WIDTH + CONTROLS_WIDTH }}
     >
       <div className='flex-row'>
         <div className='flex-column audio-player__buttons'>
