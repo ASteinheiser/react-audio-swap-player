@@ -52,6 +52,8 @@ body {
   left: 0;
   bottom: 0;
 
+  pointer-events: none;
+
   background-color: rgba(255, 255, 255, .25);
 
   transition: width 0.35s linear 0s;
