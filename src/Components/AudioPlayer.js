@@ -83,6 +83,16 @@ const _AudioPlayer = ({
     }
   }, [currentSong, data])
 
+  useEffect(() => {
+    if (indicatorPosition === SOUND_BAR_WIDTH) {
+      setIsAudioPlaying(false);
+      data[0].playerRef.current.pause();
+      data[0].playerRef.current.currentTime = 0;
+      data[1].playerRef.current.pause();
+      data[1].playerRef.current.currentTime = 0;
+    }
+  }, [indicatorPosition, currentSong, data])
+
   const renderAudioBars = dataIndex => {
     let extraStyles = {};
     if (dataIndex !== currentSong) {
